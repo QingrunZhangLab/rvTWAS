@@ -1,24 +1,25 @@
 ## Users’ Manual of rvTWAS
-### rvTWAS: 
+### Overview:
+Towards the identification of genetic basis of complex traits, transcriptome-wide association study (TWAS) is successful in integrating transcriptome data. However, TWAS is only applicable for common variants, excluding rare variants in exome or whole genome sequences. This is partly because of the inherent limitation of TWAS protocols that rely on predicting gene expressions. Briefly, a typical TWAS protocol has two steps: it trains an expression prediction model in a reference dataset containing gene expressions and genotype, and then applies this prediction model to a genotype-phenotype dataset to “impute” the unobserved expression (that is called GReX) to be associated to the phenotype. In this procedure, rare variants are not used due to its low power in predicting expressions. Our previous research has revealed the insight into TWAS: the two steps are essentially genetic feature selection and aggregations that do not have to involve predictions. Based on this insight disentangling TWAS, rare variants’ inability of predicting expression traits is no longer an obstacle. Herein, we developed “rare variant TWAS”, or rvTWAS, that first uses a Bayesian model to conduct expression-directed feature selection and then use a kernel machine to carry out feature aggregation, forming a model leveraging expressions for association mapping including rare variants. We demonstrated the performance of rvTWAS by thorough simulations and real data analysis in three psychiatric disorders, namely schizophrenia, bipolar disorder, and autism spectrum disorder. rvTWAS will open a door for sequence-based association mappings integrating gene expressions.
 
 ![My Image](Fig1A_B.PNG)
 
 ### Installation
 rvTWAS is a batteries-included JAR executable. All needed external jar packages are included in the downloadable, rvTWAS.jar. To download all necessary files, users can use the command 
-`git clone XXXX`
+`git clone https://github.com/QingrunZhangLab/rvTWAS.git`
 
 As we used an R package "susieR" and "SKAT", the users have to install "R", "susieR"(https://cran.r-project.org/web/packages/susieR/susieR.pdf),and "SKAT"(https://cran.r-project.org/web/packages/SKAT/index.html). The versions of "R", "SuSiE", and "SKAT" packages that we have used on our platform are: version 3.6.1 for "R", version 0.12.35 for "susieR", and version 2.0.0 for "SKAT" Users are also expected to have java (version: 1.8) and Plink (version: 1.9) installed on their platform.
 
 Usage:
 rvTWAS, which is composed by two steps: First, rvTWAS uses SuSiE (\cite SuSiE) to carry out variants selections to form a prioritized set of genetic variants (including rare variants) weighted by their relevance to gene expressions (Figure 1A). Second, supported by our previous  successful attempt using kernel methods to carry out common variants-based TWAS (\cite kTWAS, mkTWAS), as well as the practice of using kernel models in both common and rare variants GWAS (\cite SKAT papers, both AJHG 2010 and 2011 and the other adaptive ones), we use SKAT method to aggregate weighted variants to form a score test for the association (Figure 1B). 
 
-### 1. Feature selection using SuSiE[REF]:
+### 1. Feature selection using SuSiE[1]:
 #### 1.1 Prepare input data:
 **1.1.1	Gene expression file:** \
 Take the whole blood as an example. The fully processed, filtered and normalized gene expression matrices in bed format ("Whole_Blood.v8.normalized_expression.bed") for whole blood was downloaded from GTEx portal (https://gtexportal.org/home/datasets). We included 221 samples in our analysis and removed sex chromosomes. The covariates used in eQTL analysis, including top five genotyping principal components (PCs), were obtained from GTEx_Analysis_v8_eQTL_covariates.tar.gz, which was downloaded from GTEx portal (https://gtexportal.org/home/datasets). Then, we further performed a probabilistic estimation of expression residuals (PEER) analysis to adjust for top five genotyping PCs, age, and other potential confounding factors (PEERs)[2] for downstream prediction model building. There is a description of how to download and use the PEER tool here: https://github.com/PMBio/peer/wiki/Tutorial. According to the GTEx protocol, if the number of samples is between 150 and 250, 30 PEER factors should be used. For our study, the number of samples is 221, so we used 60 PEER factors. 
 
 **1.1.2	genotype file:**  
-The whole genome sequencing file, GTEx_Analysis_2017-06-05_v8_WholeGenomeSeq_866Indiv.vcf, was downloaded from dbGaP (https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=phs000424.v8.p2). The genotype dataset is quality controlled using the tool PLINK [3] (https://zzz.bwh.harvard.edu/plink/ ). Multiple QC steps were applied by excluding variants with missingness rate > 0.1, high deviations from Hardy-Weinberg equilibrium at p<10-6, and removing samples with missingness rate > 0.1. To be noticed that, we include all common variants, low frequency variants and rare variants. 
+The whole genome sequencing file, GTEx_Analysis_2017-06-05_v8_WholeGenomeSeq_866Indiv.vcf, was downloaded from dbGaP (https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=phs000424.v8.p2). The genotype dataset is quality controlled using the tool PLINK[3] (https://zzz.bwh.harvard.edu/plink/ ). Multiple QC steps were applied by excluding variants with missingness rate > 0.1, high deviations from Hardy-Weinberg equilibrium at p<10-6, and removing samples with missingness rate > 0.1. To be noticed that, we include all common variants, low frequency variants and rare variants. 
 
 The input genotype file ("genotype_file") with the format as below:
 
@@ -48,7 +49,7 @@ The input GWAS file ("gwas_file") contains "CHR" and "POS" columns, we just need
 We processed one chromosome at a time by executing this code, take chromsome 1 as an example:\
 `Rscript ./CODE/Susie_Gene_Chr.R  1`
 
-### 2. Feature aggregation using SKAT[REF]:
+### 2. Feature aggregation using SKAT[4][5]:
 Running the command:
 
 `java -jar rvTWAS.jar rvTWAS -format csv|plink -input_genotype INPUT_GENOTYPE_FILE -input_phenotype INPUT_PHENOTYPE_FILE -input_phenotype_column INPUT_PHENOTYPE_COLUMN_START:2|6 -input_phenotype_type PHENOTYPE_TYPE: continuous|binary -snp_info_path WEIGHT_FILE  -pheno_id INPUT_GENE_ID  -plink PLINK_BINARY_FILE_PATH  -Rscript RSCRIPT_BINARY_FILE_PATH -output_folder OUTPUT_FOLDER_PATH`
@@ -70,6 +71,11 @@ Please note that, to consistent with plink format, the phenotype is set to missi
   qingrun.zhang@ucalgary.ca<br>
   
 ### Citations
+[1]Wang, G., A. Sarkar, P. Carbonetto and M. Stephens, 2020 A simple new approach to variable selection in regression, with application to genetic fine mapping. Journal of the Royal Statistical Society Series B-Statistical Methodology 82: 1273-1300.
+[2]Stegle, O., L. Parts, M. Piipari, J. Winn and R. Durbin, 2012 Using probabilistic estimation of expression residuals (PEER) to obtain increased power and interpretability of gene expression analyses. Nat Protoc 7: 500-507.
+[3]Purcell, S., B. Neale, K. Todd-Brown, L. Thomas, M. A. Ferreira et al., 2007 PLINK: a tool set for whole-genome association and population-based linkage analyses. Am J Hum Genet 81: 559-575.
+[4]Wu, M. C., S. Lee, T. Cai, Y. Li, M. Boehnke et al., 2011 Rare-variant association testing for sequencing data with the sequence kernel association test. Am J Hum Genet 89: 82-93.
+[5]Lee, S., M. J. Emond, M. J. Bamshad, K. C. Barnes, M. J. Rieder et al., 2012 Optimal unified approach for rare-variant association testing with application to small-sample case-control whole-exome sequencing studies. Am J Hum Genet 91: 224-237.
 
 
 ### Copyright License (MIT Open Source)
