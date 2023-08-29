@@ -5,8 +5,9 @@ Towards the identification of genetic basis of complex traits, transcriptome-wid
 ![My Image](EXAMPLE/Fig1A_B.PNG)
 
 ### Installation
-rvTWAS is a batteries-included JAR executable. All needed external jar packages are included in the downloadable, rvTWAS.jar. To download all necessary files, users can use the command 
-`git clone https://github.com/QingrunZhangLab/rvTWAS.git`
+rvTWAS is a batteries-included JAR executable. All needed external jar packages are included in the downloadable, rvTWAS.jar. To download all necessary files, users need to first ensure that "git-lfs" is succesfully installed. Then users can use the commands:\
+`git lfs install`\
+`git lfs clone https://github.com/QingrunZhangLab/rvTWAS.git`
 
 As we used an R package "susieR" and "SKAT", the users have to install "R", "susieR"(https://cran.r-project.org/web/packages/susieR/susieR.pdf),and "SKAT"(https://cran.r-project.org/web/packages/SKAT/index.html). The versions of "R", "SuSiE", and "SKAT" packages that we have used on our platform are: version 3.6.1 for "R", version 0.12.35 for "susieR", and version 2.0.0 for "SKAT". Users are also expected to have java (version: 1.8) and Plink (version: 1.9) installed on their platform.
 
@@ -43,7 +44,7 @@ The input gene annot file ("gene_annot_file") is downloaded from GENCODE: https:
 
 
 **1.1.5	GWAS file:** \
-The input GWAS file ("gwas_file") contains "CHR" and "LOC" columns, we just need to make sure that all the SNPs being trained in the SuSiE model can be found in the GWAS dataset.
+The input GWAS file ("gwas_file") contains "CHR" and "POS" columns, we just need to make sure that all the SNPs being trained in the SuSiE model can be found in the GWAS dataset.
 
 #### 1.2. Training SuSiE model:
 We processed one chromosome at a time by executing this code, take chromsome 1 as an example:\
