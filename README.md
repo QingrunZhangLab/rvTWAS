@@ -44,7 +44,7 @@ The input gene annot file ("gene_annot_file") is downloaded from GENCODE: https:
 
 
 **1.1.5	GWAS file:** \
-The input GWAS file ("gwas_file") contains "CHR" and "POS" columns, we just need to make sure that all the SNPs being trained in the SuSiE model can be found in the GWAS dataset.
+The input GWAS file ("gwas_file") contains "CHR" and "LOC" columns, we just need to make sure that all the SNPs being trained in the SuSiE model can be found in the GWAS dataset.
 
 #### 1.2. Training SuSiE model:
 We processed one chromosome at a time by executing this code, take chromsome 1 as an example:\
