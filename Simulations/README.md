@@ -8,7 +8,7 @@ Based on the GTEx genotype, we simulated gene expressions in the reference datas
 
 Using target gene id = ENSG00000239961.2 as an example:
 
-`python WriteInfoFile_Step1.py ENSG00000239961.2`
+`python ./CODES/WriteInfoFile_Step1.py ENSG00000239961.2`
 
 ### Step2:
 Acknowledging that common variant may also contribute to gene expression or phenotype, the overall genetic component is modelled as the sum of this rare variant effect (in the form of either pseudo-SNV or Sum-effect) and common variants (Figure 1D lower). More specifically, five common variants (with MAF >5%) were randomly selected as causal variants, and the weighted sum of these six causal variants (5 common + 1 pseudo/sum SNVs) will be considered as the genetic component (of the expression or phenotype). The weight of each causal variant is sampled from a standard normal distribution N(0,1). 
@@ -17,11 +17,11 @@ Using target gene id = ENSG00000239961.2 and M=200 as an example:
 
 For “pseudo-SNVs”:
 
-`python WriteInfoFile_Step2.py ENSG00000239961.2 200`
+`python ./CODES/WriteInfoFile_Step2.py ENSG00000239961.2 200`
 
 For “Sum”:
 
-`python WriteInfoFile_Step2_SUM.py ENSG00000239961.2 200`
+`python ./CODES/WriteInfoFile_Step2_SUM.py ENSG00000239961.2 200`
 
 ### Step3:
 Two typical genetic architectures representing relationships between genotype, expression and phenotype are considered: causality, where genotypes alter phenotype via the expression (Figure 1E upper), and pleiotropy, where genotypes contribute to phenotype and expression independently (Figure 1E lower). Under both scenarios, we simulated expression and phenotypes using an additive genetic model, in which phenotypes and expression are caused by a weighted sum of genetic effects. In all cases, we simulated a genetic component first and then incorporate it to the expression or phenotypes using prespecified values of genetic component, i.e., heritability.
@@ -30,8 +30,8 @@ Given the case under “pseudo-SNVs” model, scenario=causality, target gene id
 
 Using GTEx genotype:
 
-`java -jar eQTL.jar sim-phenotype ENSG00000239961.2_gtex_genotype_pseudorare_200.csv INFO_FUNC_200_ENSG00000239961.2.txt causality 0.15 0.1 EXP_Rare200_Ex0.15_Ph0.1_causality_ENSG00000239961.2.txt PHENO_Rare200_Ex0.15_Ph0.1_causality_ENSG00000239961.2.txt`
+`java -jar ./CODES/eQTL.jar sim-phenotype ENSG00000239961.2_gtex_genotype_pseudorare_200.csv INFO_FUNC_200_ENSG00000239961.2.txt causality 0.15 0.1 EXP_Rare200_Ex0.15_Ph0.1_causality_ENSG00000239961.2.txt PHENO_Rare200_Ex0.15_Ph0.1_causality_ENSG00000239961.2.txt`
 
 Using1000 Genomes Project genotype:
 
-`java -jar eQTL.jar sim-phenotype ENSG00000239961.2_hg1000_genotype_pseudorare_200.csv INFO_FUNC_200_ENSG00000239961.2.txt causality 0.15 0.1 EXP_Rare200_Ex0.15_Ph0.1_causality_ENSG00000239961.2.txt PHENO_Rare200_Ex0.15_Ph0.1_causality_ENSG00000239961.2.txt`
+`java -jar ./CODES/eQTL.jar sim-phenotype ENSG00000239961.2_hg1000_genotype_pseudorare_200.csv INFO_FUNC_200_ENSG00000239961.2.txt causality 0.15 0.1 EXP_Rare200_Ex0.15_Ph0.1_causality_ENSG00000239961.2.txt PHENO_Rare200_Ex0.15_Ph0.1_causality_ENSG00000239961.2.txt`
