@@ -154,3 +154,4 @@ for curr_snp in chr_pos_list:
         tmp_chrpos_list.append(curr_snp)
 output_hgcsv.close()
 hg_csv.close()
+
